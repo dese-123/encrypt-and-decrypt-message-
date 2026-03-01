@@ -45,3 +45,5 @@ Crypt Message:
 KHOOR
 
 🎉 Your message is now encrypted (crypt message)
+<img width="839" height="400" alt="image" src="https://github.com/user-attachments/assets/f6ad2364-9dab-424f-861c-f88150a07ee2" />
+
