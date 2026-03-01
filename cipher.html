@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Encryption & Decryption Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #f1f1f1;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 20px;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            color: #a5b4fc;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .app-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .input-section, .output-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #4cc9f0;
+            font-size: 1.4rem;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+            font-size: 1.6rem;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 200px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #4361ee;
+            border-radius: 10px;
+            padding: 15px;
+            color: #f1f1f1;
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #4cc9f0;
+            box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.3);
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .cipher-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .cipher-option {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .cipher-option label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #a5b4fc;
+        }
+        
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #4361ee;
+            border-radius: 10px;
+            color: #f1f1f1;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        
+        .key-input {
+            margin-bottom: 25px;
+        }
+        
+        .key-input label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #a5b4fc;
+        }
+        
+        .key-input input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #4361ee;
+            border-radius: 10px;
+            color: #f1f1f1;
+            font-size: 1rem;
+        }
+        
+        .key-input input:focus {
+            outline: none;
+            border-color: #4cc9f0;
+            box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.3);
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            flex: 1;
+            min-width: 180px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .btn i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .encrypt-btn {
+            background: linear-gradient(90deg, #4361ee, #3a0ca3);
+            color: white;
+        }
+        
+        .encrypt-btn:hover {
+            background: linear-gradient(90deg, #3a56d4, #2d0a8a);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        .decrypt-btn {
+            background: linear-gradient(90deg, #f72585, #b5179e);
+            color: white;
+        }
+        
+        .decrypt-btn:hover {
+            background: linear-gradient(90deg, #e01e77, #9c1488);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(247, 37, 133, 0.4);
+        }
+        
+        .clear-btn {
+            background: linear-gradient(90deg, #7209b7, #560bad);
+            color: white;
+        }
+        
+        .clear-btn:hover {
+            background: linear-gradient(90deg, #6508a3, #4a0996);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(114, 9, 183, 0.4);
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-title {
+            color: #4cc9f0;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-title i {
+            margin-right: 10px;
+            font-size: 1.6rem;
+        }
+        
+        .cipher-info {
+            display: none;
+        }
+        
+        .cipher-info.active {
+            display: block;
+        }
+        
+        .cipher-info h3 {
+            color: #a5b4fc;
+            margin: 15px 0 8px;
+        }
+        
+        .cipher-info p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #e2e2e2;
+        }
+        
+        .history {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .history h3 {
+            color: #a5b4fc;
+            margin-bottom: 10px;
+        }
+        
+        .history-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            border-left: 3px solid #4361ee;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #a5b4fc;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .btn {
+                min-width: 100%;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Text Encryption & Decryption</h1>
+            <p class="subtitle">Securely encrypt and decrypt messages using various cipher algorithms. Protect your sensitive information with this easy-to-use tool.</p>
+        </header>
+        
+        <div class="app-container">
+            <div class="input-section">
+                <div class="section-title">
+                    <i class="fas fa-keyboard"></i>
+                    <h2>Input Text</h2>
+                </div>
+                <textarea id="inputText" placeholder="Enter your plain text or cipher text here...">Hello, this is a secret message that needs to be encrypted!</textarea>
+            </div>
+            
+            <div class="output-section">
+                <div class="section-title">
+                    <i class="fas fa-lock"></i>
+                    <h2>Output Text</h2>
+                </div>
+                <textarea id="outputText" placeholder="Encrypted or decrypted text will appear here..." readonly></textarea>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="cipher-selector">
+                <div class="cipher-option">
+                    <label for="cipherType"><i class="fas fa-code"></i> Cipher Type</label>
+                    <select id="cipherType">
+                        <option value="caesar">Caesar Cipher</option>
+                        <option value="vigenere">Vigenère Cipher</option>
+                        <option value="atbash">Atbash Cipher</option>
+                        <option value="railfence">Rail Fence Cipher</option>
+                        <option value="rot13">ROT13 Cipher</option>
+                    </select>
+                </div>
+                
+                <div class="cipher-option">
+                    <label for="actionType"><i class="fas fa-exchange-alt"></i> Action</label>
+                    <select id="actionType">
+                        <option value="encrypt">Encrypt</option>
+                        <option value="decrypt">Decrypt</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="key-input">
+                <label for="cipherKey"><i class="fas fa-key"></i> Cipher Key</label>
+                <input type="text" id="cipherKey" placeholder="Enter key (e.g., 3 for Caesar, 'KEY' for Vigenère)">
+            </div>
+            
+            <div class="actions">
+                <button class="btn encrypt-btn" id="encryptBtn">
+                    <i class="fas fa-lock"></i> Encrypt Text
+                </button>
+                <button class="btn decrypt-btn" id="decryptBtn">
+                    <i class="fas fa-unlock"></i> Decrypt Text
+                </button>
+                <button class="btn clear-btn" id="clearBtn">
+                    <i class="fas fa-broom"></i> Clear All
+                </button>
+            </div>
+        </div>
+        
+        <div class="info-box">
+            <div class="info-title">
+                <i class="fas fa-info-circle"></i>
+                <h2>Cipher Information</h2>
+            </div>
+            
+            <div id="caesarInfo" class="cipher-info active">
+                <h3>Caesar Cipher</h3>
+                <p>The Caesar cipher is one of the simplest and most widely known encryption techniques. It is a type of substitution cipher in which each letter in the plaintext is shifted a certain number of places down the alphabet.</p>
+                <p><strong>Key:</strong> A number between 1-25 (shift amount)</p>
+                <p><strong>Example:</strong> With key 3, 'A' becomes 'D', 'B' becomes 'E', etc.</p>
+            </div>
+            
+            <div id="vigenereInfo" class="cipher-info">
+                <h3>Vigenère Cipher</h3>
+                <p>The Vigenère cipher is a method of encrypting alphabetic text by using a series of interwoven Caesar ciphers based on the letters of a keyword. It is a form of polyalphabetic substitution.</p>
+                <p><strong>Key:</strong> A word or phrase (only letters)</p>
+                <p><strong>Example:</strong> With key "KEY", the message is encrypted using repeating Caesar shifts of K, E, Y.</p>
+            </div>
+            
+            <div id="atbashInfo" class="cipher-info">
+                <h3>Atbash Cipher</h3>
+                <p>The Atbash cipher is a substitution cipher with a specific key where the alphabet is reversed. The first letter becomes the last, the second becomes second to last, and so on.</p>
+                <p><strong>Key:</strong> No key needed for Atbash cipher</p>
+                <p><strong>Example:</strong> 'A' becomes 'Z', 'B' becomes 'Y', 'C' becomes 'X', etc.</p>
+            </div>
+            
+            <div id="railfenceInfo" class="cipher-info">
+                <h3>Rail Fence Cipher</h3>
+                <p>The rail fence cipher is a form of transposition cipher that gets its name from the way it's encoded. It writes the plaintext in a zigzag pattern between "rails", then reads off the ciphertext row by row.</p>
+                <p><strong>Key:</strong> A number (rails/rows, typically 2-10)</p>
+                <p><strong>Example:</strong> With 3 rails, "HELLO WORLD" is written on 3 lines in a zigzag pattern.</p>
+            </div>
+            
+            <div id="rot13Info" class="cipher-info">
+                <h3>ROT13 Cipher</h3>
+                <p>ROT13 is a special case of the Caesar cipher where the shift is 13. It's its own inverse, meaning applying ROT13 twice returns the original text. Commonly used in online forums to hide spoilers or offensive content.</p>
+                <p><strong>Key:</strong> No key needed for ROT13 (always shift 13)</p>
+                <p><strong>Example:</strong> 'A' becomes 'N', 'B' becomes 'O', etc.</p>
+            </div>
+            
+            <div class="history">
+                <h3><i class="fas fa-history"></i> Recent Operations</h3>
+                <div id="historyList"></div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Text Encryption & Decryption Tool | Created with HTML, CSS & JavaScript</p>
+            <p>Note: This tool runs locally in your browser. No data is sent to any server.</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('outputText');
+        const cipherType = document.getElementById('cipherType');
+        const actionType = document.getElementById('actionType');
+        const cipherKey = document.getElementById('cipherKey');
+        const encryptBtn = document.getElementById('encryptBtn');
+        const decryptBtn = document.getElementById('decryptBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const historyList = document.getElementById('historyList');
+        
+        // Cipher information sections
+        const cipherInfoSections = {
+            caesar: document.getElementById('caesarInfo'),
+            vigenere: document.getElementById('vigenereInfo'),
+            atbash: document.getElementById('atbashInfo'),
+            railfence: document.getElementById('railfenceInfo'),
+            rot13: document.getElementById('rot13Info')
+        };
+        
+        // History of operations
+        let operationHistory = [];
+        
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', initApp);
+        encryptBtn.addEventListener('click', () => processText('encrypt'));
+        decryptBtn.addEventListener('click', () => processText('decrypt'));
+        clearBtn.addEventListener('click', clearAll);
+        cipherType.addEventListener('change', updateCipherInfo);
+        
+        // Initialize the app
+        function initApp() {
+            updateCipherInfo();
+            loadHistory();
+            updatePlaceholderText();
+            
+            // Set default key for selected cipher
+            updateDefaultKey();
+        }
+        
+        // Update cipher information display
+        function updateCipherInfo() {
+            // Hide all cipher info sections
+            Object.values(cipherInfoSections).forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show the selected cipher info
+            const selectedCipher = cipherType.value;
+            if (cipherInfoSections[selectedCipher]) {
+                cipherInfoSections[selectedCipher].classList.add('active');
+            }
+            
+            // Update key placeholder
+            updateDefaultKey();
+        }
+        
+        // Update key placeholder based on selected cipher
+        function updateDefaultKey() {
+            const selectedCipher = cipherType.value;
+            
+            switch(selectedCipher) {
+                case 'caesar':
+                    cipherKey.placeholder = "Enter key (1-25), e.g., 3";
+                    cipherKey.value = "3";
+                    break;
+                case 'vigenere':
+                    cipherKey.placeholder = "Enter key (letters only), e.g., KEY";
+                    cipherKey.value = "SECRET";
+                    break;
+                case 'atbash':
+                    cipherKey.placeholder = "No key needed for Atbash cipher";
+                    cipherKey.value = "";
+                    break;
+                case 'railfence':
+                    cipherKey.placeholder = "Enter key (rails/rows, 2-10), e.g., 3";
+                    cipherKey.value = "3";
+                    break;
+                case 'rot13':
+                    cipherKey.placeholder = "No key needed for ROT13 cipher";
+                    cipherKey.value = "";
+                    break;
+            }
+            
+            updatePlaceholderText();
+        }
+        
+        // Update textarea placeholder based on action
+        function updatePlaceholderText() {
+            const action = actionType.value;
+            const cipher = cipherType.value;
+            
+            if (action === 'encrypt') {
+                inputText.placeholder = `Enter your plain text to encrypt using ${cipherType.options[cipherType.selectedIndex].text}...`;
+                outputText.placeholder = "Encrypted text will appear here...";
+            } else {
+                inputText.placeholder = `Enter your cipher text to decrypt using ${cipherType.options[cipherType.selectedIndex].text}...`;
+                outputText.placeholder = "Decrypted text will appear here...";
+            }
+        }
+        
+        // Process text (encrypt or decrypt)
+        function processText(action) {
+            const text = inputText.value.trim();
+            const key = cipherKey.value.trim();
+            const cipher = cipherType.value;
+            
+            if (!text) {
+                alert("Please enter some text to process.");
+                return;
+            }
+            
+            let result = "";
+            
+            try {
+                switch(cipher) {
+                    case 'caesar':
+                        result = action === 'encrypt' ? caesarCipher(text, parseInt(key)) : caesarCipher(text, -parseInt(key));
+                        break;
+                    case 'vigenere':
+                        result = action === 'encrypt' ? vigenereCipher(text, key, true) : vigenereCipher(text, key, false);
+                        break;
+                    case 'atbash':
+                        result = atbashCipher(text);
+                        break;
+                    case 'railfence':
+                        result = action === 'encrypt' ? railFenceCipher(text, parseInt(key)) : railFenceDecipher(text, parseInt(key));
+                        break;
+                    case 'rot13':
+                        result = rot13Cipher(text);
+                        break;
+                    default:
+                        result = "Unknown cipher selected.";
+                }
+                
+                outputText.value = result;
+                
+                // Add to history
+                addToHistory(action, cipher, text.substring(0, 50) + (text.length > 50 ? "..." : ""));
+                
+            } catch (error) {
+                outputText.value = `Error: ${error.message}`;
+            }
+        }
+        
+        // Caesar Cipher
+        function caesarCipher(text, shift) {
+            if (!shift && shift !== 0) {
+                shift = 3; // Default shift
+            }
+            
+            // Normalize shift to be within 0-25
+            shift = ((shift % 26) + 26) % 26;
+            
+            let result = "";
+            
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                
+                if (char.match(/[a-z]/i)) {
+                    const code = text.charCodeAt(i);
+                    
+                    // Uppercase letters
+                    if (code >= 65 && code <= 90) {
+                        char = String.fromCharCode(((code - 65 + shift) % 26) + 65);
+                    }
+                    // Lowercase letters
+                    else if (code >= 97 && code <= 122) {
+                        char = String.fromCharCode(((code - 97 + shift) % 26) + 97);
+                    }
+                }
+                
+                result += char;
+            }
+            
+            return result;
+        }
+        
+        // Vigenère Cipher
+        function vigenereCipher(text, key, encrypt) {
+            if (!key) {
+                key = "KEY";
+            }
+            
+            // Remove non-letters from key and convert to uppercase
+            key = key.toUpperCase().replace(/[^A-Z]/g, '');
+            
+            if (key.length === 0) {
+                throw new Error("Key must contain at least one letter");
+            }
+            
+            let result = "";
+            let keyIndex = 0;
+            
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                
+                if (char.match(/[a-z]/i)) {
+                    const code = text.charCodeAt(i);
+                    const keyShift = key.charCodeAt(keyIndex % key.length) - 65;
+                    
+                    // Uppercase letters
+                    if (code >= 65 && code <= 90) {
+                        const shift = encrypt ? keyShift : 26 - keyShift;
+                        char = String.fromCharCode(((code - 65 + shift) % 26) + 65);
+                        keyIndex++;
+                    }
+                    // Lowercase letters
+                    else if (code >= 97 && code <= 122) {
+                        const shift = encrypt ? keyShift : 26 - keyShift;
+                        char = String.fromCharCode(((code - 97 + shift) % 26) + 97);
+                        keyIndex++;
+                    }
+                }
+                
+                result += char;
+            }
+            
+            return result;
+        }
+        
+        // Atbash Cipher
+        function atbashCipher(text) {
+            let result = "";
+            
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                const code = text.charCodeAt(i);
+                
+                // Uppercase letters
+                if (code >= 65 && code <= 90) {
+                    char = String.fromCharCode(90 - (code - 65));
+                }
+                // Lowercase letters
+                else if (code >= 97 && code <= 122) {
+                    char = String.fromCharCode(122 - (code - 97));
+                }
+                
+                result += char;
+            }
+            
+            return result;
+        }
+        
+        // Rail Fence Cipher
+        function railFenceCipher(text, rails) {
+            if (!rails || rails < 2) {
+                rails = 3;
+            }
+            
+            // Create the rail matrix
+            const fence = Array(rails).fill().map(() => []);
+            let rail = 0;
+            let direction = 1;
+            
+            // Place characters in zigzag pattern
+            for (let i = 0; i < text.length; i++) {
+                fence[rail].push(text[i]);
+                rail += direction;
+                
+                // Change direction at the edges
+                if (rail === 0 || rail === rails - 1) {
+                    direction = -direction;
+                }
+            }
+            
+            // Read off the rails
+            return fence.flat().join('');
+        }
+        
+        // Rail Fence Decipher
+        function railFenceDecipher(text, rails) {
+            if (!rails || rails < 2) {
+                rails = 3;
+            }
+            
+            // Create the rail pattern
+            const fence = Array(rails).fill().map(() => []);
+            const pattern = Array(text.length).fill(0);
+            let rail = 0;
+            let direction = 1;
+            
+            // Mark the positions in the pattern
+            for (let i = 0; i < text.length; i++) {
+                pattern[i] = rail;
+                rail += direction;
+                
+                // Change direction at the edges
+                if (rail === 0 || rail === rails - 1) {
+                    direction = -direction;
+                }
+            }
+            
+            // Fill the fence with characters based on pattern
+            let index = 0;
+            for (let r = 0; r < rails; r++) {
+                for (let i = 0; i < text.length; i++) {
+                    if (pattern[i] === r) {
+                        fence[r][i] = text[index++];
+                    }
+                }
+            }
+            
+            // Read the message following the pattern
+            let result = '';
+            rail = 0;
+            direction = 1;
+            
+            for (let i = 0; i < text.length; i++) {
+                result += fence[rail][i];
+                rail += direction;
+                
+                // Change direction at the edges
+                if (rail === 0 || rail === rails - 1) {
+                    direction = -direction;
+                }
+            }
+            
+            return result;
+        }
+        
+        // ROT13 Cipher (special case of Caesar with shift 13)
+        function rot13Cipher(text) {
+            return caesarCipher(text, 13);
+        }
+        
+        // Add operation to history
+        function addToHistory(action, cipher, text) {
+            const timestamp = new Date().toLocaleTimeString();
+            const operation = {
+                action,
+                cipher,
+                text,
+                timestamp
+            };
+            
+            operationHistory.unshift(operation);
+            
+            // Keep only last 5 operations
+            if (operationHistory.length > 5) {
+                operationHistory.pop();
+            }
+            
+            saveHistory();
+            updateHistoryDisplay();
+        }
+        
+        // Update history display
+        function updateHistoryDisplay() {
+            historyList.innerHTML = '';
+            
+            operationHistory.forEach(op => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                const actionIcon = op.action === 'encrypt' ? 'fa-lock' : 'fa-unlock';
+                const cipherName = cipherType.options[document.querySelector(`option[value="${op.cipher}"]`).index].text;
+                
+                historyItem.innerHTML = `
+                    <div><i class="fas ${actionIcon}"></i> ${op.action.toUpperCase()} with ${cipherName}</div>
+                    <div style="color: #a5b4fc; font-size: 0.85rem;">"${op.text}"</div>
+                    <div style="color: #888; font-size: 0.8rem;">${op.timestamp}</div>
+                `;
+                
+                historyList.appendChild(historyItem);
+            });
+        }
+        
+        // Save history to localStorage
+        function saveHistory() {
+            localStorage.setItem('cipherHistory', JSON.stringify(operationHistory));
+        }
+        
+        // Load history from localStorage
+        function loadHistory() {
+            const savedHistory = localStorage.getItem('cipherHistory');
+            if (savedHistory) {
+                operationHistory = JSON.parse(savedHistory);
+                updateHistoryDisplay();
+            }
+        }
+        
+        // Clear all inputs and outputs
+        function clearAll() {
+            inputText.value = '';
+            outputText.value = '';
+            cipherKey.value = '';
+            updateDefaultKey();
+            inputText.focus();
+        }
+        
+        // Update action type when buttons are clicked
+        actionType.addEventListener('change', updatePlaceholderText);
+        
+        // Also update when cipher changes
+        cipherType.addEventListener('change', updatePlaceholderText);
+    </script>
+</body>
+</html>
